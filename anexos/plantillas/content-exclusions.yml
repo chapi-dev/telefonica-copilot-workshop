@@ -1,0 +1,53 @@
+# Plantilla de content exclusions de Copilot a nivel Org
+#
+# Ruta: Org settings → Copilot → Content exclusion
+# También aplicable vía API: PUT /orgs/{org}/copilot/content-exclusions
+#
+# Reglas:
+# - Las exclusiones se aplican a TODOS los repos cuando la clave es "*".
+# - Se pueden definir reglas específicas por repo con la clave "<org>/<repo>".
+# - Los patrones usan sintaxis gitignore.
+# - Las exclusiones evitan que Copilot use estos archivos como CONTEXTO,
+#   pero NO impiden que un dev los abra manualmente.
+
+"*":
+  # Secretos y credenciales (defensa en profundidad; deberían no estar en repo)
+  - "**/secrets/**"
+  - "**/.env"
+  - "**/.env.*"
+  - "**/*.pem"
+  - "**/*.key"
+  - "**/*.p12"
+  - "**/*.pfx"
+  - "**/id_rsa*"
+  - "**/credentials.json"
+  - "**/serviceAccount*.json"
+
+  # Datos sensibles y PII
+  - "**/customer-data/**"
+  - "**/pii/**"
+  - "**/datasets/raw/**"
+  - "**/*.csv"            # Ajustar si tus repos legitimamente versionan CSVs
+  - "**/seed-data/personal/**"
+
+  # Documentación interna confidencial
+  - "**/internal-only/**"
+  - "**/confidential/**"
+
+  # Backups y dumps
+  - "**/*.sql.gz"
+  - "**/*.dump"
+  - "**/backup/**"
+
+# Reglas específicas por repo (ejemplos para Telefónica)
+"telefonica-payments/pricing-core":
+  - "src/algorithms/proprietary/**"
+  - "docs/internal/strategy/**"
+
+"telefonica-platform/identity-broker":
+  - "src/crypto/keys/**"
+  - "config/jwk/**"
+
+"telefonica-data/customer-analytics":
+  - "models/segmentation/proprietary/**"
+  - "notebooks/exploratory/**"

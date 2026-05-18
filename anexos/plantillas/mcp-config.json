@@ -1,0 +1,86 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/spec/main/schema/mcp.schema.json",
+  "_comment": "Plantilla MCP para Telefonica. Copiar a .vscode/mcp.json en el repo. NUNCA commitear con tokens reales.",
+  "servers": {
+    "github": {
+      "_comment": "MCP oficial de GitHub. Permite a Copilot consultar issues, PRs, code search del tenant.",
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${input:github_pat}"
+      }
+    },
+    "telefonica-jira": {
+      "_comment": "Conector contra Jira interno (lectura). Devuelve issues, sprints, epics.",
+      "type": "http",
+      "url": "https://mcp.telefonica.internal/jira",
+      "headers": {
+        "Authorization": "Bearer ${input:tef_jira_token}"
+      }
+    },
+    "telefonica-api-catalog": {
+      "_comment": "Catalogo corporativo de APIs internas. Resuelve names + endpoints + contratos.",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@telefonica/mcp-api-catalog@latest"],
+      "env": {
+        "TEF_CATALOG_URL": "https://apis.telefonica.internal",
+        "TEF_CATALOG_TOKEN": "${input:tef_catalog_token}"
+      }
+    },
+    "sentinel-readonly": {
+      "_comment": "Consultas KQL a Sentinel en modo solo-lectura (workspace dev).",
+      "type": "http",
+      "url": "https://mcp.telefonica.internal/sentinel",
+      "headers": {
+        "Authorization": "Bearer ${input:sentinel_token}"
+      }
+    },
+    "vault-ephemeral": {
+      "_comment": "Solicita secretos EFIMEROS al Vault corporativo. Auditado y con TTL corto.",
+      "type": "http",
+      "url": "https://mcp.telefonica.internal/vault",
+      "headers": {
+        "Authorization": "Bearer ${input:vault_token}"
+      }
+    },
+    "adr-knowledge": {
+      "_comment": "Consultas al repositorio de Architecture Decision Records corporativos.",
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["mcp-server-adr", "--repo", "telefonica-arch/adr-collection"]
+    }
+  },
+  "inputs": [
+    {
+      "id": "github_pat",
+      "type": "promptString",
+      "description": "GitHub PAT con scopes repo, read:org",
+      "password": true
+    },
+    {
+      "id": "tef_jira_token",
+      "type": "promptString",
+      "description": "Token MCP Telefonica Jira (vault://copilot/mcp/jira)",
+      "password": true
+    },
+    {
+      "id": "tef_catalog_token",
+      "type": "promptString",
+      "description": "Token catalogo APIs (vault://copilot/mcp/catalog)",
+      "password": true
+    },
+    {
+      "id": "sentinel_token",
+      "type": "promptString",
+      "description": "Token Sentinel read-only (vault://copilot/mcp/sentinel)",
+      "password": true
+    },
+    {
+      "id": "vault_token",
+      "type": "promptString",
+      "description": "Token Vault efimero (vault://copilot/mcp/vault)",
+      "password": true
+    }
+  ]
+}
