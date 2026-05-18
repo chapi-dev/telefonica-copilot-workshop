@@ -6,10 +6,17 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Made with GitHub Copilot](https://img.shields.io/badge/Made%20with-GitHub%20Copilot-8957e5?logo=github)](https://github.com/features/copilot)
+[![CI](https://github.com/chapi-dev/telefonica-copilot-workshop/actions/workflows/validate.yml/badge.svg)](https://github.com/chapi-dev/telefonica-copilot-workshop/actions/workflows/validate.yml)
+[![Pages](https://github.com/chapi-dev/telefonica-copilot-workshop/actions/workflows/pages.yml/badge.svg)](https://chapi-dev.github.io/telefonica-copilot-workshop/)
+[![Stars](https://img.shields.io/github/stars/chapi-dev/telefonica-copilot-workshop?style=social)](https://github.com/chapi-dev/telefonica-copilot-workshop/stargazers)
+
 [![Workshop format](https://img.shields.io/badge/Format-Hands--on%20%C2%B7%202h-1f6feb)](#-agenda-detallada-120-min)
 [![Audience](https://img.shields.io/badge/Audience-Plataforma%20%C2%B7%20SecOps%20%C2%B7%20FinOps%20%C2%B7%20DevEx-009eef)](#-audiencia-objetivo)
 [![Status](https://img.shields.io/badge/Status-Ready%20to%20deliver-success)](#)
 [![Lang](https://img.shields.io/badge/Idioma-Espa%C3%B1ol-c60b1e)](#)
+[![Code of Conduct](https://img.shields.io/badge/Contributor%20Covenant-2.1-purple)](./CODE_OF_CONDUCT.md)
+
+🌐 **[Ver versión web →](https://chapi-dev.github.io/telefonica-copilot-workshop/)**
 
 **📅 Miércoles 20 de mayo de 2026 · 🕚 11:00 – 13:00 (CET)**
 
@@ -20,6 +27,28 @@
 > 💙 **Sobre el azul Telefónica:** este workshop está aterrizado al stack típico del grupo (Entra ID, Sentinel, AKS, Key Vault, Power BI). Todos los ejemplos, URLs y comandos son **directamente ejecutables** sustituyendo placeholders.
 
 > ⚠️ **Disclaimer:** material **educativo y de comunidad**, creado por [@chapi-dev](https://github.com/chapi-dev). No es contenido oficial de Telefónica S.A. ni de GitHub, Inc. Las marcas "Telefónica" y "GitHub Copilot" pertenecen a sus respectivos titulares y se utilizan solo con fines descriptivos del público y herramienta del workshop.
+
+---
+
+## 🗺️ Vista de un vistazo
+
+```mermaid
+flowchart LR
+    A([🎬 Bienvenida<br/>5 min]) --> B[🛡️ Gobernanza<br/>25 min]
+    B --> C[💰 Costes<br/>20 min]
+    C --> D[🔌 Skills y MCP<br/>25 min]
+    D --> E[🧪 Caso práctico<br/>30 min]
+    E --> F[🔁 Mejora continua<br/>10 min]
+    F --> G([🎓 Plan 90 días<br/>5 min])
+
+    style A fill:#e3f2fd,stroke:#1f6feb,color:#000
+    style B fill:#fff3e0,stroke:#ef6c00,color:#000
+    style C fill:#fce4ec,stroke:#c2185b,color:#000
+    style D fill:#f3e5f5,stroke:#7b1fa2,color:#000
+    style E fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style F fill:#fffde7,stroke:#f9a825,color:#000
+    style G fill:#e1f5fe,stroke:#0277bd,color:#000
+```
 
 ---
 

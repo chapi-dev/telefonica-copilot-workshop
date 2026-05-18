@@ -1,0 +1,83 @@
+name: 🔍 Validate workshop content
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-powershell:
+    name: 🟦 PowerShell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+
+      - name: Analyze .ps1 files
+        shell: pwsh
+        run: |
+          $results = Get-ChildItem -Recurse -Filter *.ps1 |
+            ForEach-Object {
+              Invoke-ScriptAnalyzer -Path $_.FullName -Severity @('Error','Warning')
+            }
+          if ($results) {
+            $results | Format-Table -AutoSize
+            $errors = @($results | Where-Object { $_.Severity -eq 'Error' })
+            if ($errors.Count -gt 0) {
+              Write-Error "PSScriptAnalyzer encontro $($errors.Count) error(es)"
+              exit 1
+            }
+          } else {
+            Write-Host "OK: ningun problema detectado por PSScriptAnalyzer" -ForegroundColor Green
+          }
+
+  validate-json-yaml:
+    name: 🟨 JSON / YAML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install pyyaml
+
+      - name: Validate JSON files
+        run: |
+          set -e
+          for f in $(find . -name "*.json" -not -path "./node_modules/*"); do
+            echo "→ $f"
+            python -c "import json,sys; json.load(open(sys.argv[1]))" "$f"
+          done
+          echo "OK: todos los JSON validan"
+
+      - name: Validate YAML files
+        run: |
+          set -e
+          for f in $(find . \( -name "*.yml" -o -name "*.yaml" \) -not -path "./.git/*"); do
+            echo "→ $f"
+            python -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" "$f"
+          done
+          echo "OK: todos los YAML validan"
+
+  validate-markdown-links:
+    name: 🔗 Markdown links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: "yes"
+          use-verbose-mode: "yes"
+          config-file: .github/markdown-link-check.json

@@ -19,14 +19,19 @@ Copilot cambia **cada mes**: nuevos modelos, nuevas features (Agent, MCP, Extens
 
 ## 2. El ciclo D-M-A-I (Detect → Measure → Adapt → Iterate) (3 min)
 
-```
-        ┌──────────────────────────────────────────────┐
-        │                                              ▼
-   ┌─────────┐    ┌────────┐    ┌────────┐    ┌──────────────┐
-   │ DETECT  │ →  │MEASURE │ →  │ ADAPT  │ →  │   ITERATE    │
-   └─────────┘    └────────┘    └────────┘    └──────────────┘
-        ▲                                              │
-        └──────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    D(🔍 <b>Detect</b><br/>Métricas · Surveys<br/>Champions · Tickets)
+    M(📊 <b>Measure</b><br/>KPIs · Acceptance<br/>Idle ratio · NPS)
+    A(🛠️ <b>Adapt</b><br/>Instructions · MCP<br/>Education · Costs)
+    I(🚀 <b>Iterate</b><br/>Sprint plataforma<br/>cada 6 semanas)
+
+    D --> M --> A --> I --> D
+
+    style D fill:#fff3e0,stroke:#ef6c00,color:#000
+    style M fill:#e3f2fd,stroke:#1f6feb,color:#000
+    style A fill:#f3e5f5,stroke:#7b1fa2,color:#000
+    style I fill:#e8f5e9,stroke:#2e7d32,color:#000
 ```
 
 ### 2.1 Detect

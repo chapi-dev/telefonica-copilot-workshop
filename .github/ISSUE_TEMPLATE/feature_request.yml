@@ -1,0 +1,37 @@
+name: 💡 Propuesta de mejora
+description: Nueva plantilla, nuevo script, nuevo módulo o mejora de los existentes.
+title: "[feat] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ¡Gracias por aportar! Cuéntanos qué te gustaría ver y por qué.
+  - type: textarea
+    id: problema
+    attributes:
+      label: ¿Qué problema resuelve?
+      description: Sin solución, el problema actual es...
+    validations:
+      required: true
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: Propuesta
+      description: ¿Qué te gustaría que existiera? Describe el resultado deseado.
+    validations:
+      required: true
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas consideradas
+  - type: dropdown
+    id: alcance
+    attributes:
+      label: Alcance
+      options:
+        - Pequeño (editar un archivo)
+        - Mediano (nueva plantilla o script)
+        - Grande (nuevo módulo o variante)
+    validations:
+      required: true

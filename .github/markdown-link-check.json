@@ -1,0 +1,17 @@
+{
+  "ignorePatterns": [
+    { "pattern": "^https?://(?:[a-z0-9-]+\\.)*telefonica\\.(?:com|internal)" },
+    { "pattern": "^https?://github\\.com/(?:enterprises|orgs)/<" },
+    { "pattern": "^https?://github\\.com/telefonica-" },
+    { "pattern": "^https?://mcp\\.telefonica\\." },
+    { "pattern": "^https?://apis\\.telefonica\\." },
+    { "pattern": "^https?://security\\.telefonica\\." },
+    { "pattern": "vault://" },
+    { "pattern": "<.+>" }
+  ],
+  "timeout": "15s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "30s",
+  "aliveStatusCodes": [200, 206, 403, 429]
+}

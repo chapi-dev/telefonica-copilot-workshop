@@ -7,15 +7,24 @@
 
 ## 1. Las 4 palancas de extensión (3 min)
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  Cómo ENRIQUECER el contexto y CAPACIDADES de Copilot            │
-├──────────────────────────────────────────────────────────────────┤
-│ A. Custom instructions     → reglas y contexto fijo del repo/org │
-│ B. Prompt files (.prompt)  → "macros" reutilizables              │
-│ C. MCP servers             → tools dinámicos (APIs internas)     │
-│ D. Copilot Extensions      → integraciones empaquetadas (GH App) │
-└──────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    C(((🤖 <b>Copilot</b>)))
+    A[📝 <b>A. Custom instructions</b><br/>reglas fijas del repo/org]
+    B[⚡ <b>B. Prompt files</b><br/>macros reutilizables]
+    M[🔌 <b>C. MCP servers</b><br/>tools dinámicos · APIs internas]
+    E[🧩 <b>D. Copilot Extensions</b><br/>integraciones empaquetadas]
+
+    A --- C
+    B --- C
+    M --- C
+    E --- C
+
+    style C fill:#8957e5,stroke:#4c1d95,color:#fff
+    style A fill:#fff3e0,stroke:#ef6c00,color:#000
+    style B fill:#e3f2fd,stroke:#1f6feb,color:#000
+    style M fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style E fill:#fce4ec,stroke:#c2185b,color:#000
 ```
 
 | Capa | Vive en | Quién mantiene | Ejemplo Telefónica |

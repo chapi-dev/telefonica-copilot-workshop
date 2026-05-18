@@ -1,0 +1,25 @@
+name: ❓ Pregunta / Duda
+description: Pregunta sobre Copilot, gobernanza, MCP, costes, etc. (cualquier cosa del workshop)
+title: "[question] "
+labels: ["question"]
+body:
+  - type: textarea
+    id: pregunta
+    attributes:
+      label: Tu pregunta
+      description: Describe la duda con todo el contexto que puedas.
+    validations:
+      required: true
+  - type: dropdown
+    id: tema
+    attributes:
+      label: Tema relacionado
+      options:
+        - Gobernanza y control
+        - Modelo de costes
+        - Skills y conectores
+        - Caso práctico
+        - Optimización continua
+        - Otro
+    validations:
+      required: true

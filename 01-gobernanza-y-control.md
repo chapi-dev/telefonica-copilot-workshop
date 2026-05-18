@@ -9,13 +9,19 @@
 
 La gobernanza de Copilot en GitHub Enterprise se aplica en **4 capas** que se aplican en cascada:
 
-```
-┌──────────────────────────────────────────────────────────┐
-│ 1. Enterprise Account                                    │  ← Políticas globales (no override)
-│    ├─ 2. Organizations                                   │  ← Policies por BU
-│    │    ├─ 3. Repositories                               │  ← Reglas de repo, CODEOWNERS
-│    │    │    └─ 4. Branches / Files                      │  ← Branch protection, content exclusions
-└──────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    E["🏢 <b>Enterprise Account</b><br/><i>Políticas globales — no override</i>"]
+    O["🗂️ <b>Organizations</b><br/><i>Policies por BU</i>"]
+    R["📦 <b>Repositories</b><br/><i>Rulesets, CODEOWNERS</i>"]
+    B["🌿 <b>Branches / Files</b><br/><i>Branch protection, content exclusions</i>"]
+
+    E --> O --> R --> B
+
+    style E fill:#1f6feb,stroke:#0b3a85,color:#fff
+    style O fill:#3884f5,stroke:#0b3a85,color:#fff
+    style R fill:#79a9f7,stroke:#0b3a85,color:#000
+    style B fill:#b8d1fa,stroke:#0b3a85,color:#000
 ```
 
 > 🔑 **Regla de oro:** lo que se decide en Enterprise gana siempre. Las Orgs pueden ser más restrictivas, nunca más permisivas.

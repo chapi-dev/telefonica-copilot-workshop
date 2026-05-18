@@ -1,0 +1,40 @@
+name: 🐛 Reportar erratas / bug
+description: Una errata, un enlace roto, un comando que no funciona, etc.
+title: "[bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por ayudar a mantener el workshop afilado. Por favor rellena los campos para que podamos reproducir y arreglar rápido.
+  - type: input
+    id: ubicacion
+    attributes:
+      label: Ubicación
+      description: Archivo o sección donde está el problema (p.ej. `01-gobernanza-y-control.md#22-content-exclusions`).
+      placeholder: ruta/al/archivo.md#seccion
+    validations:
+      required: true
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción del problema
+      description: ¿Qué dice / hace? ¿Qué debería decir / hacer?
+    validations:
+      required: true
+  - type: textarea
+    id: reproducir
+    attributes:
+      label: Pasos para reproducir (si aplica)
+      description: Comandos o pasos para verificar el error.
+      render: bash
+  - type: input
+    id: entorno
+    attributes:
+      label: Entorno
+      description: SO, versión de `gh`, versión de PowerShell, etc.
+      placeholder: "Windows 11, gh 2.55.0, PowerShell 7.4"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Contexto adicional / capturas

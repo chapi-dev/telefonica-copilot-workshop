@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discusión general / ideas
+    url: https://github.com/chapi-dev/telefonica-copilot-workshop/discussions
+    about: Para conversaciones abiertas sobre Copilot enterprise, adopción y patrones.
+  - name: 📘 Documentación oficial de GitHub Copilot
+    url: https://docs.github.com/en/copilot
+    about: Para dudas sobre el producto Copilot directamente desde la fuente.
