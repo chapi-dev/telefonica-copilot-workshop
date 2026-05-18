@@ -23,7 +23,7 @@
 - [Custom organization roles](https://docs.github.com/en/organizations/managing-peoples-access-to-your-organization-with-roles/about-custom-organization-roles)
 
 ### Copilot policies
-- [Managing Copilot policies for your enterprise](https://docs.github.com/en/enterprise-cloud@latest/admin/copilot-business-only/setting-policies-for-copilot-business-in-your-enterprise/managing-policies-and-features-for-copilot-in-your-enterprise)
+- [Managing Copilot policies for your organization](https://docs.github.com/en/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-policies-and-features-for-copilot-in-your-organization)
 - [Excluding content from Copilot](https://docs.github.com/en/copilot/managing-copilot/configuring-and-auditing-content-exclusion)
 - [Copilot privacy FAQs](https://github.com/features/copilot#faq)
 
@@ -43,11 +43,11 @@
 
 ## 2. Modelo de costes
 
-- [About billing for Copilot](https://docs.github.com/en/billing/managing-billing-for-github-copilot/about-billing-for-github-copilot)
+- [Copilot billing concepts](https://docs.github.com/en/copilot/concepts/copilot-billing)
 - [Copilot REST API — Billing & seats](https://docs.github.com/en/rest/copilot/copilot-user-management)
 - [Copilot Metrics API](https://docs.github.com/en/rest/copilot/copilot-metrics)
-- [Premium requests overview](https://docs.github.com/en/copilot/managing-copilot/understanding-and-managing-requests-in-copilot)
-- [Setting budgets and alerts](https://docs.github.com/en/billing/managing-the-plan-for-your-github-account/about-budgets-for-your-github-account)
+- [Premium requests overview](https://docs.github.com/en/copilot/concepts/copilot-billing)
+- [Setting budgets and alerts](https://docs.github.com/en/billing/tutorials/set-up-budgets)
 - [Copilot pricing page](https://github.com/features/copilot/plans)
 
 ---
@@ -66,11 +66,11 @@
 - [Catálogo público de MCP servers](https://github.com/modelcontextprotocol/servers)
 
 ### Extensions
-- [Building Copilot Extensions](https://docs.github.com/en/copilot/building-copilot-extensions)
+- [Building Copilot Extensions](https://docs.github.com/en/copilot/building-copilot-extensions/about-building-copilot-extensions)
 - [Copilot Extensions Marketplace](https://github.com/marketplace?type=apps&copilot_app=true)
 
 ### Knowledge bases (Enterprise)
-- [Knowledge bases for Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/customizing-copilot/managing-copilot-knowledge-bases)
+- [Knowledge bases for Copilot Enterprise](https://docs.github.com/en/copilot/customizing-copilot)
 
 ### Coding Agent
 - [Copilot Coding Agent](https://docs.github.com/en/copilot/using-github-copilot/using-copilot-coding-agent-to-work-on-tasks)
@@ -79,9 +79,10 @@
 
 ## 4. Caso práctico — Buenas prácticas
 
-- [Prompt engineering for Copilot Chat](https://docs.github.com/en/copilot/copilot-chat-cookbook)
+- [Example prompts for Copilot Chat](https://docs.github.com/en/copilot/example-prompts-for-github-copilot-chat)
 - [Best practices for Copilot in the IDE](https://docs.github.com/en/copilot/using-github-copilot/best-practices-for-using-github-copilot)
-- [Microsoft Learn — Copilot prompt engineering](https://learn.microsoft.com/en-us/training/paths/copilot-developer-prompt-engineering/)
+- [Microsoft Learn — GitHub Copilot prompt engineering](https://learn.microsoft.com/en-us/training/modules/introduction-prompt-engineering-with-github-copilot/)
+- [Microsoft Learn — Copilot learning path](https://learn.microsoft.com/en-us/training/paths/copilot/)
 
 ---
 

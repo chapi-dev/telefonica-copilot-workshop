@@ -3,15 +3,30 @@
     { "pattern": "^https?://(?:[a-z0-9-]+\\.)*telefonica\\.(?:com|internal)" },
     { "pattern": "^https?://github\\.com/(?:enterprises|orgs)/<" },
     { "pattern": "^https?://github\\.com/telefonica-" },
+    { "pattern": "^https?://github\\.com/chapi-dev/telefonica-copilot-workshop/releases/" },
+    { "pattern": "^https?://chapi-dev\\.github\\.io/" },
     { "pattern": "^https?://mcp\\.telefonica\\." },
     { "pattern": "^https?://apis\\.telefonica\\." },
     { "pattern": "^https?://security\\.telefonica\\." },
     { "pattern": "vault://" },
-    { "pattern": "<.+>" }
+    { "pattern": "<.+>" },
+    { "pattern": "^https?://docs\\.github\\.com/" },
+    { "pattern": "^https?://learn\\.microsoft\\.com/" },
+    { "pattern": "^https?://(?:www\\.)?youtube\\.com/" }
   ],
-  "timeout": "15s",
+  "replacementPatterns": [],
+  "httpHeaders": [
+    {
+      "urls": ["https://github.com/", "https://www.github.com/"],
+      "headers": {
+        "Accept": "text/html",
+        "User-Agent": "Mozilla/5.0 (compatible; markdown-link-check)"
+      }
+    }
+  ],
+  "timeout": "20s",
   "retryOn429": true,
-  "retryCount": 3,
+  "retryCount": 5,
   "fallbackRetryDelay": "30s",
-  "aliveStatusCodes": [200, 206, 403, 429]
+  "aliveStatusCodes": [200, 206, 301, 302, 303, 307, 308, 403, 429]
 }

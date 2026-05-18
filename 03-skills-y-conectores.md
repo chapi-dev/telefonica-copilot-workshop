@@ -222,7 +222,7 @@ Son **GitHub Apps** especializadas que aparecen como `@nombre` en Copilot Chat (
 - `@telefonica-arch` → preguntas al ADR repo y al catálogo de patrones aprobados.
 - `@telefonica-data` → metadatos y lineage de tablas en el data lake (con permisos del usuario).
 
-Crear una extensión: ver [docs oficiales](https://docs.github.com/en/copilot/building-copilot-extensions).
+Crear una extensión: ver [docs oficiales](https://docs.github.com/en/copilot/building-copilot-extensions/about-building-copilot-extensions).
 
 ---
 
