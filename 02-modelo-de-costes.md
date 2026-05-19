@@ -31,7 +31,7 @@ Copilot no es una sola línea en la factura. El coste total ("TCO") tiene 4 comp
 | **Copilot Business** | Empresas estándar | Code completion, Chat IDE, modelos base, content exclusions, audit log | Knowledge bases, Copilot en GitHub.com avanzado, fine-tuning |
 | **Copilot Enterprise** | Grandes empresas reguladas (Telefónica) | Todo Business + Knowledge bases, Copilot en PRs, custom instructions a nivel org, EU data residency, Coding Agent ilimitado en repos privados | – |
 
-**Premium requests** (modelo de "uso adicional" desde 2025):
+**Token comsumption**
 
 - Cada interacción con modelos premium (Claude Sonnet, GPT-5, Gemini 2.x)consume tokens
 - Cada plan trae una cuota mensual incluida; el resto se factura como consumo.
@@ -88,10 +88,7 @@ jq '[.[].copilot_ide_code_completions.editors[].models[].languages[]
 ### 3.3 Dashboard recomendado
 
 Tres opciones, según el ecosistema interno:
-
-1. **GitHub native** → Copilot Usage page (UI built-in) — bueno para empezar.
-2. **Power BI** (Telefónica estándar) → conector custom contra Copilot Metrics API. Refresh diario.
-3. **Grafana / Datadog** → para equipos de SRE que ya tienen stack.
+**GitHub native** → Copilot Usage page (UI built-in) — bueno para empezar.
 
 ---
 
@@ -120,7 +117,7 @@ El script:
 
 > ⚠️ Documentar la política en intranet. No revocar sin warning previo.
 
-### 4.2 Controlar premium requests (quick win #2)
+### 4.2 Controlar tokens(quick win #2)
 
 - Activar **budget alerts**: `Enterprise settings → Billing → Budgets and alerts → New budget`.
 - Definir budget por **org** (no global): permite atribuir al cost center correcto.
@@ -130,7 +127,7 @@ El script:
 **Buenas prácticas para reducir gasto premium sin perder valor:**
 
 1. **Custom instructions** que indiquen a Copilot usar modelo base salvo necesidad explícita.
-2. **Educar**: no usar Claude Sonnet 4.6 para autocompletar imports. Dejarlo para refactors complejos.
+2. **Educar**: no usar Claude Sonnet 4.7 para autocompletar imports. Dejarlo para refactors complejos.
 3. **Prompt files** reutilizables para tareas repetitivas (evitan iteraciones que queman requests).
 4. **Mirar el ratio acceptance** de modelos premium: si es bajo, el modelo no está dando valor.
 
