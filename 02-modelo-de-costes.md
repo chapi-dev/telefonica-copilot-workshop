@@ -33,7 +33,7 @@ Copilot no es una sola línea en la factura. El coste total ("TCO") tiene 4 comp
 
 **Premium requests** (modelo de "uso adicional" desde 2025):
 
-- Cada interacción con modelos premium (Claude Sonnet, GPT-5, Gemini 2.x) **consume 1 premium request**.
+- Cada interacción con modelos premium (Claude Sonnet, GPT-5, Gemini 2.x)consume tokens
 - Cada plan trae una cuota mensual incluida; el resto se factura como consumo.
 - **Coste típico**: muy bajo por request, pero **se acumula rápido en equipos grandes** si no se controla.
 
