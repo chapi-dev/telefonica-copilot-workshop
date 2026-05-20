@@ -568,6 +568,168 @@ flowchart LR
 
 > 💡 **Cuándo NO lo necesitas:** workflows que solo hacen build/test puro, despliegues a servicios públicos, pull a registries públicos. En esos casos, runner GitHub-hosted estándar es más simple y barato.
 
+### 2.6 Azure Developer CLI (`azd`) — el pegamento entre código, infraestructura y CI/CD
+
+Una de las preguntas más típicas que va a salir en cualquier kickoff con devs: *"si tengo Copilot generando código y GitHub Actions ejecutándolo, ¿cómo encajan el provisioning de Azure y el deploy?"*. La respuesta del stack Microsoft moderno se llama **`azd` (Azure Developer CLI)**, y su buen uso es **un asunto de gobernanza**, no sólo una herramienta de devs.
+
+#### Qué es y para qué vale
+
+`azd` es una CLI open source de Microsoft que **orquesta el ciclo de vida completo** de una app en Azure: scaffolding, IaC (Bicep/Terraform), deploy de código, pipelines y teardown. Un único `azd up` levanta toda la infra + despliega la app + la deja monitorizada.
+
+```mermaid
+flowchart LR
+    INIT["azd init<br/><i>scaffold desde template</i>"]
+    PROV["azd provision<br/><i>Bicep / Terraform</i>"]
+    DEP["azd deploy<br/><i>app code</i>"]
+    UP["azd up<br/><i>provision + deploy</i>"]
+    PIPE["azd pipeline config<br/><i>genera workflow GH</i>"]
+    DOWN["azd down<br/><i>limpia recursos</i>"]
+
+    INIT --> PROV --> DEP
+    INIT -.-> UP
+    UP --> PIPE
+    PIPE -.-> DOWN
+
+    style UP fill:#1f6feb,stroke:#0b3a85,color:#fff
+    style PIPE fill:#0078d4,stroke:#0b3a85,color:#fff
+```
+
+**Por qué importa a Gobernanza:**
+
+| Aspecto | Sin `azd` | Con `azd` bien gobernado |
+|---------|-----------|---------------------------|
+| Identidad usada para deploy | Credenciales humanas mezcladas | **Managed Identity / federated credentials** del agente/pipeline |
+| Reproducibilidad | "En mi máquina funciona" | IaC + `azure.yaml` versionado |
+| Naming/tagging de recursos | Cada equipo a su aire | **Template aprobado** del catálogo corporativo |
+| Auditoría en Azure | Acciones atribuidas a la persona | Atribuidas a una **identidad de servicio** trazable |
+| Setup de pipeline | Escrito a mano, frágil | `azd pipeline config` genera workflow con OIDC ya configurado |
+| Onboarding de un repo nuevo | Días | Minutos (1 comando) |
+
+#### Casos de uso típicos en Telefónica
+
+- **Onboarding rápido** de microservicios en AKS/Container Apps con observabilidad y secrets desde Key Vault.
+- **Demos y PoCs** que se montan y desmontan en horas (con `azd up` / `azd down`).
+- **Pipelines de despliegue reproducibles** sin escribir YAML desde cero.
+- **Lab corporativo** para que un dev nuevo despliegue una stack de referencia en su sandbox sin pedir tickets.
+- **Combinado con Copilot Coding Agent**: el agente puede ejecutar `azd up` dentro de su sandbox para validar cambios de infra end-to-end.
+
+#### Setup paso a paso (BU / equipo Plataforma)
+
+##### 1) Instalación
+
+```powershell
+# Windows (winget)
+winget install Microsoft.Azd
+
+# Linux / Mac (script oficial)
+curl -fsSL https://aka.ms/install-azd.sh | bash
+
+# Devcontainer / Codespace
+# Añadir al devcontainer.json:
+#   "features": { "ghcr.io/devcontainers/features/azure-cli:1": {} }
+# + RUN curl -fsSL https://aka.ms/install-azd.sh | bash
+```
+
+Verificar:
+```powershell
+azd version
+```
+
+##### 2) Autenticación — patrón seguro por contexto
+
+| Contexto | Patrón |
+|----------|--------|
+| **Dev local** | `azd auth login` (browser, MFA) — sólo para sandbox personal |
+| **CI/CD GitHub Actions** | **OIDC federated credentials** (sin secretos) — `azure/login@v2` |
+| **Runner self-hosted / VM** | **Managed Identity** (`azd auth login --managed-identity`) |
+| **Coding Agent / pipelines no interactivos** | **Service Principal con federated credential** — nunca secret en claro |
+
+> 🔑 **Política Telefónica:** prohibir `azd auth login` con cuenta humana para tocar `prod` o `staging`. Sólo MI / federated credentials. La cuenta humana sólo en sandbox personal.
+
+##### 3) Estructura mínima de un proyecto `azd`
+
+```text
+mi-servicio/
+├─ azure.yaml                # descriptor del proyecto azd
+├─ infra/
+│  ├─ main.bicep             # IaC (Bicep o Terraform)
+│  ├─ main.parameters.json
+│  └─ modules/
+├─ src/
+│  └─ ...                    # código de la app
+├─ .github/
+│  └─ workflows/
+│     └─ azure-dev.yml       # generado por `azd pipeline config`
+└─ .azure/                   # local — NO commitear
+   └─ <env>/
+      └─ .env
+```
+
+Ejemplo de `azure.yaml`:
+
+```yaml
+name: payments-api
+metadata:
+  template: telefonica-bicep-microservice@1.0.0   # template del catálogo corporativo
+services:
+  api:
+    project: ./src
+    language: dotnet
+    host: containerapp
+hooks:
+  postdeploy:
+    shell: pwsh
+    run: ./scripts/smoke-tests.ps1
+```
+
+##### 4) Provisioning + deploy
+
+```powershell
+azd init --template <template-corporativo>
+azd env new payments-api-dev --location westeurope
+azd up
+```
+
+##### 5) Generar el pipeline de GitHub Actions con OIDC
+
+```powershell
+azd pipeline config --provider github --auth-type federated
+```
+
+Esto:
+- Crea un **App Registration** en Entra ID.
+- Configura **federated credentials** ligadas al repo + environment de GitHub.
+- Genera el workflow `.github/workflows/azure-dev.yml` listo para correr.
+- **Cero secrets** en GitHub Secrets.
+
+#### Best practices de gobernanza para `azd`
+
+| Práctica | Por qué |
+|----------|---------|
+| **Catálogo corporativo de templates** (`telefonica/azd-templates`) | Evita la proliferación de Bicep "creativos"; estándares de naming, tagging, security baseline ya incluidos |
+| **Versionado semántico de templates** | Permite a cada equipo fijar versión y planificar migraciones |
+| **Bicep/Terraform en repo separado bajo CODEOWNERS** | Cambios de infra requieren review de Plataforma |
+| **Required workflow** `azd-deploy.yml` aplicado a todos los repos que usan `azd` | Garantiza que el deploy pasa por security scan, cost check y aprobación de environment |
+| **Environments de GitHub** (`dev`, `staging`, `prod`) con reviewers y secrets scoped | Combinado con federated credentials, evita filtraciones cross-environment |
+| **Naming convention en `azd env`** (`<bu>-<servicio>-<env>`) | Trazabilidad multi-BU/país |
+| **Tags obligatorios en Bicep** (`bu`, `cost-center`, `criticality`, `data-classification`) | Cost allocation real + búsquedas en Azure Resource Graph |
+| **`azd down` con `--purge` prohibido en prod** | Protege Key Vaults soft-deleted y datos sensibles |
+| **Logs de `azd` enviados a Sentinel** | Auditoría del ciclo de vida deploy/destroy |
+| **Federated credentials por entorno** (no por repo) | Limita el blast radius si un repo se compromete |
+
+#### Decisiones de gobernanza para Telefónica
+
+| Decisión | Recomendación |
+|----------|---------------|
+| ¿Quién mantiene los templates corporativos? | Equipo Plataforma + SecOps como reviewer |
+| ¿Templates abiertos o whitelisted? | **Whitelisted** — solo `telefonica/azd-templates/*` se pueden usar en prod |
+| ¿Permitido `azd up` desde laptop a prod? | ❌ No. Solo desde pipeline con federated credentials |
+| ¿Quién aprueba un template nuevo? | Plataforma + SecOps + FinOps (los 3 firman) |
+| ¿Cómo se atribuyen costes? | Tags Bicep obligatorios → Azure Cost Management → cost center |
+| ¿Cómo encaja con Copilot? | Coding Agent puede ejecutar `azd up` en su sandbox (no en prod); developers usan `azd init` desde templates Copilot-friendly con `copilot-instructions.md` preconfigurado |
+
+> 💡 **Patrón target Telefónica:** dev local con `azd auth login` solo en sandbox; pipelines y Coding Agent usando federated credentials; templates corporativos versionados; deploy a prod siempre vía GitHub Actions con environment approval.
+
 ---
 
 ## 3. Cumplimiento normativo (6 min)

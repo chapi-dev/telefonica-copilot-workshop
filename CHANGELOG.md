@@ -17,6 +17,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ### 🚀 Añadido
 
+- Nueva sub-sección `01-gobernanza-y-control.md §2.6 — Azure Developer CLI (azd)`:
+  - Qué es y para qué vale (`init`, `provision`, `deploy`, `up`, `down`, `pipeline config`).
+  - Diagrama mermaid del ciclo de vida.
+  - Tabla comparativa "sin azd vs con azd bien gobernado" (identidad, reproducibilidad, naming, auditoría, setup pipelines, onboarding).
+  - Casos de uso típicos para Telefónica (microservicios AKS/Container Apps, demos/PoCs, pipelines reproducibles, integración con Copilot Coding Agent).
+  - Setup paso a paso: instalación, patrones de autenticación por contexto (dev local / CI/CD OIDC / Managed Identity / Service Principal federado), estructura mínima de proyecto, generación de pipelines con federated credentials.
+  - Best practices de gobernanza (catálogo corporativo de templates, versionado semántico, CODEOWNERS, required workflows, environments scoped, tags Bicep obligatorios, prohibición de `azd down --purge` en prod, streaming logs a Sentinel).
+  - Decisiones de gobernanza concretas para Telefónica.
+
 #### Identidad, EMU y SSO/SCIM (Entra ID + on-prem)
 - Reorganización en profundidad de `01-gobernanza-y-control.md §1` en 6 sub-bloques:
   - 1.1 **Estructura jerárquica Enterprise · Organizations · Teams** con ejemplo Telefónica multi-país y convenciones de naming.
