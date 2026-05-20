@@ -52,22 +52,29 @@ O desde UI: `Org settings → Copilot → Access → buscar usuario → Remove`.
 
 ---
 
-## Coste
+## Optimización de consumo
 
-### ¿Cuánto cuesta Copilot Enterprise?
-Precio público actual: consultar [github.com/features/copilot/plans](https://github.com/features/copilot/plans). Para Telefónica aplica precio enterprise negociado.
+> Pricing, SKUs y modelos de licenciamiento están fuera del alcance del workshop. Para precios actualizados, consultar [github.com/features/copilot/plans](https://github.com/features/copilot/plans) o el contrato enterprise de Telefónica.
 
-### ¿Qué son premium requests?
-Interacciones con modelos "premium" (Claude Sonnet, GPT-5, Gemini 2.x). Cada plan incluye una cuota; el exceso se factura como uso.
+### ¿Qué acciones de Copilot consumen tokens y cuáles no?
+**Gratis:** code completions inline + Next Edit Suggestions.
+**Consumen:** Copilot Chat, Inline Chat, Edit mode, Coding Agent, Copilot en PRs, MCP server invocations.
+La mayor parte del día a día (autocomplete) no consume. El gasto real viene del Chat largo y del Agent mal usado.
 
-### ¿Cómo reduzco gasto sin perder valor?
-1. Revocar idle seats (28d).
-2. Custom instructions que recomienden modelo base por defecto.
-3. Prompt files reutilizables.
-4. Budget alerts al 75 %.
+### ¿Cómo reduzco consumo sin perder valor?
+1. **Cambiar el modelo default** a uno eficiente (Mini / Haiku). Escalar a Opus solo cuando lo requiera la tarea.
+2. **Evitar Coding Agent** para tareas simples — usar Inline Chat o Edit mode.
+3. **1 chat = 1 tarea**: cerrar y abrir uno nuevo en vez de arrastrar 200 turnos.
+4. **Custom instructions** que pidan respuestas concisas.
+5. **Prompt files** reutilizables con modelo fijado para tareas repetitivas.
+6. **Acotar el contexto** del chat (cerrar archivos irrelevantes, usar `#file:` explícito, evitar `@workspace` cuando no aporta).
 
-### ¿Cuánto vale una hora de Copilot Coding Agent?
-Depende de minutos de GitHub Actions + premium requests del modelo. Estimación: similar a 1-2h de Action minutes Linux + ~50 premium requests. **Activar timeouts** para acotar.
+### ¿Cuándo SÍ vale lanzar el Coding Agent?
+- Migración mecánica en N archivos.
+- Bug que requiere ejecutar tests e iterar hasta verde.
+- Tareas con criterio de "done" claro.
+- Tareas en background mientras haces otra cosa.
+- **No** para una edición de 2 líneas — eso es Inline Chat.
 
 ---
 
@@ -153,6 +160,9 @@ Sí **si**:
 
 ### ¿El agente puede ejecutar comandos arbitrarios?
 Tiene un runner sandbox de GitHub. Puede ejecutar lo que el repo permita (tests, lints, builds). No tiene acceso a infra interna salvo que se configure.
+
+### ¿Y si necesito que un workflow llegue a recursos privados de Azure (Key Vault, AKS, ACR)?
+Activar **Hosted Compute Networking**: GitHub inyecta una NIC del runner dentro de tu VNet corporativa. Mantienes runners gestionados (cero operación) y a la vez tu workflow accede a private endpoints sin exponer IPs públicas. Ventaja clave para Telefónica: cumple políticas DORA/NIS2 y se combina con OIDC trust hacia Azure (elimina secretos de service principal). Detalle en [§2.5 del módulo 01](../01-gobernanza-y-control.md#25-hosted-compute-networking--runners-conectados-a-tu-red-corporativa).
 
 ### ¿Puedo asignar Copilot como reviewer en PRs?
 Sí. Útil para primer pase ligero. **No sustituye** la revisión humana en repos críticos.

@@ -1,201 +1,232 @@
-# 02 · Modelo de costes (20 min)
+# 02 · Optimización de consumo (20 min)
 
-> ⏱️ **11:30 – 11:50** · Speaker: FinOps + Plataforma  
-> 🎯 **Outcome:** salir sabiendo **cuánto cuesta hoy** Copilot en vuestra BU, qué seats están idle y cómo medir ROI con datos reales.
+> ⏱️ **11:30 – 11:50** · Speaker: Plataforma + DevEx  
+> 🎯 **Outcome:** salir sabiendo **qué consume tokens y qué no**, cuándo evitar el Coding Agent, cómo elegir modelo y los patrones diarios que reducen el consumo sin perder valor.
 
----
-
-## 1. Mapa del coste real (3 min)
-
-Copilot no es una sola línea en la factura. El coste total ("TCO") tiene 4 componentes:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ COSTE TOTAL DE COPILOT EN TELEFÓNICA                        │
-├─────────────────────────────────────────────────────────────┤
-│ 1. Licencias Copilot (per seat / mes)                       │
-│ 2. Premium requests (Claude, GPT-5, modelos grandes)        │
-│ 3. Copilot Coding Agent (GitHub Actions minutes + storage)  │
-│ 4. Coste oculto: idle seats + sobreasignación               │
-└─────────────────────────────────────────────────────────────┘
-```
-
-> 💡 En la mayoría de tenants enterprise, **el coste oculto (#4) supera el 20 %**. Es el primer objetivo a atacar.
+> 📌 **Alcance del módulo:** este bloque trata exclusivamente de **optimización táctica del consumo** (cómo "gastar menos tokens" en el día a día). Pricing, SKUs, billing y plantillas TCO viven en la documentación oficial de GitHub — aquí nos centramos en lo que el **dev y el tech lead** pueden controlar.
 
 ---
 
-## 2. SKUs y modelo de licenciamiento (3 min)
+## 1. La regla mental del consumo (2 min)
 
-| SKU | Pensado para | Incluye | No incluye |
-|-----|--------------|---------|-----------|
-| **Copilot Business** | Empresas estándar | Code completion, Chat IDE, modelos base, content exclusions, audit log | Knowledge bases, Copilot en GitHub.com avanzado, fine-tuning |
-| **Copilot Enterprise** | Grandes empresas reguladas (Telefónica) | Todo Business + Knowledge bases, Copilot en PRs, custom instructions a nivel org, EU data residency, Coding Agent ilimitado en repos privados | – |
+Antes de optimizar, hay que tener clara una distinción que casi nadie conoce: **no todas las acciones de Copilot consumen igual**.
 
-**Token comsumption**
+| Acción Copilot | ¿Consume tokens? | Notas |
+|----------------|:----------------:|-------|
+| **Inline code completions** (autocomplete gris) | ❌ Gratis | Tu pan de cada día |
+| **Next Edit Suggestions** | ❌ Gratis | Las sugerencias del cursor siguiente |
+| **Inline Chat** (`Ctrl+I` / `Cmd+I` en VS Code) | ✅ Consume | Bajo si la ventana es corta |
+| **Copilot Chat panel** | ✅ Consume | Crece con el historial |
+| **Edit mode** (multi-file edits guiados) | ✅ Consume | Medio |
+| **Coding Agent / Agent mode** | ✅✅ Consume mucho | Multi-step + ejecución de herramientas |
+| **Copilot en PRs** (descripción, review, summary) | ✅ Consume | Por evento |
+| **MCP server invocations** | ✅ Consume | Cuenta como tool calls |
 
-- Cada interacción con modelos premium (Claude Sonnet, GPT-5, Gemini 2.x)consume tokens
-- Cada plan trae una cuota mensual incluida; el resto se factura como consumo.
-- **Coste típico**: muy bajo por request, pero **se acumula rápido en equipos grandes** si no se controla.
-
-> 🔑 Para Telefónica recomendamos **Copilot Enterprise** con un **budget mensual de premium requests** por org/BU.
-
----
-
-## 3. Métricas de adopción y consumo (6 min)
-
-### 3.1 Copilot Metrics API (la fuente de la verdad)
-
-Endpoint principal:
-
-```
-GET /orgs/{org}/copilot/metrics
-GET /enterprises/{enterprise}/copilot/metrics
-```
-
-Devuelve, para cada uno de los **últimos 28 días**:
-
-- Usuarios activos en IDE / Chat / PR.
-- Sugerencias mostradas vs aceptadas (acceptance rate).
-- Líneas de código sugeridas vs aceptadas.
-- Breakdown por **lenguaje** y por **editor** (VS Code, JetBrains, Visual Studio, Neovim, etc.).
-- Uso de Copilot Chat: turnos, % chats útiles.
-
-**Ejemplo de consulta:**
-
-```bash
-gh api /enterprises/telefonica-copilot-lab/copilot/metrics \
-  -H "Accept: application/vnd.github+json" > metrics-28d.json
-
-# Aceptance rate medio últimos 28 días
-jq '[.[].copilot_ide_code_completions.editors[].models[].languages[] 
-     | {lang: .name, ar: (.total_code_acceptances / (.total_code_suggestions+1))}]
-     | group_by(.lang) | map({lang: .[0].lang, ar_avg: (map(.ar) | add / length)})' metrics-28d.json
-```
-
-> 📂 Script PowerShell completo: `anexos/scripts/pull-copilot-metrics.ps1`
-
-### 3.2 KPIs que hay que mirar (no todos)
-
-| KPI | Cómo se calcula | Bueno | Alerta |
-|-----|----------------|-------|--------|
-| **Adopción activa** | Active users ÷ Seats asignados (28d) | ≥ 80 % | < 60 % |
-| **Engagement** | Active users IDE ÷ Active users totales | ≥ 70 % | < 50 % |
-| **Acceptance rate (suggestion)** | Acepts ÷ Suggestions mostradas | 25–45 % | < 15 % |
-| **Chat utility** | Chats con acepts ÷ Chats totales | ≥ 40 % | < 20 % |
-| **Idle ratio** | Seats sin actividad 28d ÷ Seats totales | < 10 % | > 20 % |
-| **Coste por dev activo / mes** | Coste total ÷ Active users | – | Crece sin razón |
-
-### 3.3 Dashboard recomendado
-
-Tres opciones, según el ecosistema interno:
-**GitHub native** → Copilot Usage page (UI built-in) — bueno para empezar.
+> 🔑 **Mensaje clave:** la mayor parte del día a día (autocomplete) es **gratis**. El consumo viene de chats largos, modelos sobredimensionados y agentes lanzados para tareas triviales.
 
 ---
 
-## 4. Optimización del consumo (6 min)
+## 2. Elegir el modelo correcto (4 min)
 
-### 4.1 Cazar idle seats (quick win #1)
+Como regla práctica, **al subir de modelo subes 5×–30× los tokens consumidos para la misma tarea**. Elegir el modelo es la palanca de optimización más grande.
 
-Definición operativa: seat asignado **sin actividad en 28 días**.
+### Tabla rápida: qué modelo para qué tarea
 
-```bash
-pwsh -File anexos/scripts/identify-idle-seats.ps1 -Org telefonica-sandbox -DaysIdle 28
-```
+| Tarea | Modelo recomendado | Por qué |
+|-------|--------------------|---------|
+| Autocomplete inline | El built-in (gratis) | Automático, sin elegir |
+| "¿Qué hace esta función?" | **GPT-5 mini / Claude Haiku** | Tarea trivial, sin razonamiento |
+| Generar tests unitarios | Mini / Haiku | Patrón mecánico |
+| Generar regex / SQL simple | Mini | Salida corta |
+| Explicar un stack trace | Mini / Haiku | Lectura + síntesis |
+| Refactor de 1 archivo | Sonnet / GPT-5 base | Equilibrio coste/calidad |
+| Bug complejo multi-archivo | Sonnet | Mejor manejo de contexto |
+| Diseño de arquitectura | Opus / GPT-5.x | Razonamiento profundo |
+| Migración masiva (Cobol → Java) | Opus + Agent | Vale lo que cuesta |
+| "Hello world" / pruebas exploratorias | Mini | No tires Opus al aire |
 
-El script:
-1. Pulla seats de `/orgs/{org}/copilot/billing/seats`.
-2. Cruza con `last_activity_at`.
-3. Devuelve CSV con: usuario · team · días sin actividad · ahorro mensual estimado.
+### Anti-patrón del default mal puesto
 
-**Política recomendada para Telefónica:**
+❌ Dejar **Claude Opus** como modelo default del equipo → cualquier "explícame este import" cuesta 30× lo razonable.
 
-| Días sin actividad | Acción |
-|--------------------|--------|
-| 14 | Aviso por email al usuario + manager |
-| 21 | Aviso final |
-| 28 | Revocación automática vía SCIM/grupo |
+✅ Configurar **modelo eficiente como default** (Mini / Haiku) y **escalar manualmente** solo cuando la tarea lo exige. Ese único cambio reduce el consumo del equipo entre 40 % y 70 %.
 
-> ⚠️ Documentar la política en intranet. No revocar sin warning previo.
+Dónde se cambia el default:
 
-### 4.2 Controlar tokens(quick win #2)
-
-- Activar **budget alerts**: `Enterprise settings → Billing → Budgets and alerts → New budget`.
-- Definir budget por **org** (no global): permite atribuir al cost center correcto.
-- Alertas al 50 %, 75 %, 90 % del presupuesto.
-- Si se supera el 100 %, decidir si: (a) cortar acceso a premium o (b) seguir con cargo extra (configurable).
-
-**Buenas prácticas para reducir gasto premium sin perder valor:**
-
-1. **Custom instructions** que indiquen a Copilot usar modelo base salvo necesidad explícita.
-2. **Educar**: no usar Claude Sonnet 4.7 para autocompletar imports. Dejarlo para refactors complejos.
-3. **Prompt files** reutilizables para tareas repetitivas (evitan iteraciones que queman requests).
-4. **Mirar el ratio acceptance** de modelos premium: si es bajo, el modelo no está dando valor.
-
-### 4.3 Coding Agent: el coste invisible
-
-Cada tarea del **Copilot Coding Agent** consume:
-- Minutos de GitHub Actions (en un runner gestionado por GitHub).
-- Storage temporal.
-- Premium requests del modelo elegido.
-
-Controles:
-
-- Limitar quién puede invocarlo (`Settings → Copilot → Coding agent → Allowed users`).
-- Limitar repos donde puede operar (allow-list).
-- Establecer **timeout por tarea** (default 30 min).
-- Auditar tareas completadas semanalmente.
-
-### 4.4 Reasignación inteligente
-
-- Crear un **pool dinámico** de seats: en lugar de asignar a personas, asignar a teams.
-- Si un dev se va de un team → pierde el seat automáticamente (vía Entra ID).
-- Si entra → lo gana automáticamente.
+- **Per-user**: VS Code → Copilot Chat → selector de modelo en la cabecera.
+- **Per-org / enterprise** (recomendado): policy `Model selection` con allow-list que pone delante los modelos eficientes y restringe Opus a casos justificados.
 
 ---
 
-## 🧪 Lab guiado (incluido en los 20 min)
+## 3. Cuándo NO usar Coding Agent (3 min)
 
-```bash
-# 1. Pull de métricas (snapshot del día)
-pwsh -File anexos/scripts/pull-copilot-metrics.ps1 -Org telefonica-sandbox -Out metrics
+El Coding Agent es la herramienta **más cara por sesión**: ejecuta múltiples turnos, invoca herramientas y arrastra mucho contexto. Para la mayoría de tareas hay alternativas más baratas y rápidas.
 
-# 2. Identificar idle seats últimos 28 días
-pwsh -File anexos/scripts/identify-idle-seats.ps1 -Org telefonica-sandbox -DaysIdle 28
+### Si quieres…
 
-# 3. Calcular acceptance rate ponderado por lenguaje
-jq '[.copilot_ide_code_completions.editors[].models[].languages[] 
-     | select(.total_code_suggestions > 100)
-     | {lang: .name, ar: (100*.total_code_acceptances/.total_code_suggestions)}]
-     | sort_by(.ar) | reverse' metrics/latest.json
+| Tarea | NO uses Agent. Usa… |
+|-------|---------------------|
+| Cambiar 1 línea | Inline edit (`Ctrl+I`) |
+| Renombrar una variable / símbolo | Refactor nativo del IDE |
+| Generar 1 test | Inline Chat con prompt corto |
+| "Documentame esta función" | Inline Chat |
+| Cambio multi-archivo guiado (tú decides los pasos) | **Edit mode** (no Agent) |
+| Hotfix urgente de 2 líneas | Inline Chat |
+| "Explícame este código" | Inline Chat |
 
-# 4. (Opcional) Revocar un seat de prueba
-gh api --method DELETE /orgs/telefonica-sandbox/copilot/billing/selected_users \
-  -f selected_usernames[]="usuario-de-prueba"
-```
+### Cuándo SÍ vale el Agent
+
+- **Migración mecánica** repetida en N archivos (donde paso a paso humano sería tedioso).
+- **Bug que requiere ejecutar tests + iterar** hasta verde.
+- **Tarea con criterio de "done" claro** (tests pasan, lint pasa, build verde).
+- **Repos con CODEOWNERS estricto** que garantizan review humana del PR del agente.
+- **Tareas en background** mientras tú haces otra cosa.
+
+### Cómo lanzar Agent de forma frugal
+
+1. **Prompt concreto y acotado**: *"Migra estos 3 archivos de class components a hooks. No cambies tests"*. Evita *"refactoriza el frontend"*.
+2. **Limitar archivos en el contexto** (no toda la app).
+3. **Modelo intermedio por defecto** (Sonnet/GPT-5 base), no Opus salvo casos complejos.
+4. **Timeouts cortos** para que no se eternice.
+5. **Revisar el PR rápido** para abortar a tiempo si el agente se desvía.
 
 ---
 
-## 📊 Plantilla de TCO mensual (rellenar en vivo)
+## 4. Acotar el contexto del chat (3 min)
 
-| Concepto | Cantidad | Precio unidad | Total |
-|----------|----------|---------------|-------|
-| Copilot Enterprise seats | __ | __ €/mes | __ € |
-| Premium requests extra | __ | __ €/req | __ € |
-| Actions minutes (Coding Agent) | __ | __ €/min | __ € |
-| Storage adicional | __ GB | __ €/GB | __ € |
-| **Subtotal** | | | __ € |
-| Idle seats detectados | __ | __ €/mes | **-__ € (ahorro)** |
-| **TCO neto** | | | **__ €/mes** |
+Los **input tokens** cuentan, y son fáciles de inflar sin darse cuenta. Si tu chat arrastra 50 archivos abiertos y un historial de 200 mensajes, cada turno cuesta varias veces más de lo necesario.
+
+### Buenas prácticas con ahorro estimado
+
+| Práctica | Ahorro |
+|----------|:------:|
+| **Cerrar archivos irrelevantes** antes de abrir Chat | 20–40 % |
+| Usar `#file:auth.ts` explícito en vez de "el archivo de auth" | 30–60 % |
+| **Empezar chat nuevo** en vez de continuar uno de 200 turnos | 50–80 % |
+| Quitar imágenes / screenshots pesados que no aportan | ~30 % |
+| Evitar `@workspace` cuando la pregunta es local a un archivo | ~40 % |
+| Usar slash-commands cortos (`/explain`, `/fix`, `/tests`) | ~10 % |
+| Pegar fragmentos relevantes en vez de archivos enteros | 30–50 % |
+
+### El anti-patrón "chat eterno"
+
+❌ Dev abre Chat al empezar el sprint, no lo cierra en 2 semanas → cada turno arrastra cientos de mensajes de contexto, y el coste por respuesta crece linealmente.
+
+✅ **1 tarea = 1 chat nuevo**. Cierra al terminar. Si vas a otra tarea, abre uno limpio.
+
+---
+
+## 5. Custom instructions para forzar concisión (2 min)
+
+Cada vez que Copilot responde con un texto verboso, estás pagando por tokens que no usas. Añadir al `.github/copilot-instructions.md` del repo (o nivel Org) una sección de eficiencia:
+
+```markdown
+## Optimización de consumo
+
+- Responde de forma concisa, sin verbosidad innecesaria.
+- No repitas el código del usuario en la respuesta — solo el cambio.
+- Si dudas, pregunta antes de generar 500 líneas.
+- Prefiere modelos eficientes (Haiku, Mini) salvo que el problema lo requiera.
+- Para tareas mecánicas (tests, docs), genera de una pasada sin iterar.
+- No incluyas explicaciones largas tras el código a menos que se te pidan.
+- Si el contexto es ambiguo, pide aclaración en vez de asumir y producir N variantes.
+```
+
+Esto reduce típicamente **30–50 % de los output tokens** de cualquier sesión, y mejora la legibilidad de las respuestas como efecto colateral.
+
+> 📂 La plantilla `anexos/plantillas/copilot-instructions.md` incluye esta sección lista para copiar.
+
+---
+
+## 6. Prompt files reutilizables (2 min)
+
+Para las **5–10 tareas más repetitivas** del equipo, crear `.github/prompts/*.prompt.md`. Ejemplo:
+
+```markdown
+---
+mode: edit
+model: gpt-5-mini
+description: Genera test unitario vitest
+---
+
+# Generar test unitario
+
+Toma la función seleccionada y genera un test unitario:
+
+- Framework: vitest
+- Cobertura: happy path + 2 edge cases + 1 error case
+- Sin comentarios redundantes
+- No expliques nada — solo el código
+```
+
+Beneficios:
+
+- **Reproducible** (no reinventa cada dev cada vez).
+- **Modelo fijado** al eficiente — evita que un dev escoja Opus por inercia.
+- **Acota el output esperado** → menos tokens generados.
+- **Compartible** vía repo: el equipo entero converge en patrones eficientes.
+
+---
+
+## 7. Anti-patterns que disparan el consumo (2 min)
+
+| Anti-pattern | Sobrecoste típico |
+|--------------|-------------------|
+| Chat de 200 turnos sin cerrar | 5–10× más tokens por turno |
+| Pegar README completo al preguntar algo de un path | 50× output esperado |
+| Agent para una sola edición | 20× más que Inline Chat |
+| Opus como modelo default | 10–30× cualquier modelo eficiente |
+| `@workspace` activado siempre por defecto | 3–5× input tokens |
+| Re-preguntar lo mismo en chat nuevo sin reutilizar prompt file | Coste constante repetido |
+| Pedir "rewriteme la app entera" | Sesión explosiva, suele acabar mal |
+| Encadenar 10 agent runs por mismo bug en vez de re-acotar prompt | 10× consumo |
+
+> 🎯 **Si el equipo elimina solo los 3 primeros, el consumo baja típicamente un 40–60 %.**
+
+---
+
+## 8. Medición rápida de éxito (2 min)
+
+Tres indicadores que sí merece la pena mirar semanalmente:
+
+| Indicador | Cómo se mide | Por qué importa |
+|-----------|--------------|------------------|
+| **Acceptance rate por modelo** | Metrics API → suggestions aceptadas / mostradas | Si Opus tiene <30 % y Mini 60 %, estás pagando de más por menos valor |
+| **Ratio Agent vs Inline Chat** | Eventos en audit log | Ratio alto de Agent suele indicar abuso para tareas simples |
+| **Tokens por sesión por dev** (proxy) | Metrics API por usuario | Percentil 90 identifica power-users con hábitos mal acostumbrados |
+
+> 📂 Script de snapshot: `anexos/scripts/pull-copilot-metrics.ps1`.
+
+---
+
+## 🧪 Lab guiado (5 min)
+
+```powershell
+# 1. Snapshot de métricas actuales
+pwsh -File anexos/scripts/pull-copilot-metrics.ps1 -Org chapi-platform
+
+# 2. Identificar seats sin actividad (oportunidad de reasignación)
+pwsh -File anexos/scripts/identify-idle-seats.ps1 -Org chapi-platform -DaysIdle 28
+
+# 3. Ver acceptance rate por modelo (en jq)
+jq '.copilot_ide_chat.editors[].models[]
+    | {model: .name, ar: (.total_chats_acceptances/(.total_chats+0.0001))}' metrics/latest.json
+```
+
+> Objetivo del lab: ver con datos reales **qué modelo tiene mejor acceptance** y dónde está la fricción que hace que un dev cambie a Opus innecesariamente.
 
 ---
 
 ## ✅ Checklist de salida del módulo
 
-- [ ] Política de **idle seats** definida y comunicada.
-- [ ] **Budget alerts** activadas en cada org productiva.
-- [ ] **Dashboard** (GitHub native / Power BI) accesible para FinOps y líderes.
-- [ ] **Snapshot semanal** de métricas programado (Action o pipeline).
-- [ ] **Pool dinámico** vía teams sincronizados desde Entra ID.
-- [ ] Plantilla TCO rellena para al menos una BU.
+- [ ] Custom instructions con sección de optimización en cada repo productivo.
+- [ ] **Modelo default** cambiado a uno eficiente (Mini / Haiku) en `Settings → Copilot → Default model` o vía policy enterprise.
+- [ ] **Prompt files corporativos** para las 5–10 tareas más repetitivas, con modelo fijado.
+- [ ] Mensaje "1 chat = 1 tarea" comunicado al equipo (champions, onboarding, intranet).
+- [ ] Acceptance rate por modelo revisado en el dashboard mensual.
+- [ ] Política clara de cuándo SÍ y cuándo NO usar el Coding Agent.
+- [ ] Revisión trimestral de los 3 anti-patterns top.
+
+---
 
 ➡️ Siguiente: [`03-skills-y-conectores.md`](./03-skills-y-conectores.md)
