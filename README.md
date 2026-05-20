@@ -22,9 +22,6 @@
 
 </div>
 
----
-
-> 💙 **Sobre el azul Telefónica:** este workshop está aterrizado al stack típico del grupo (Entra ID, Sentinel, AKS, Key Vault, Power BI). Todos los ejemplos, URLs y comandos son **directamente ejecutables** sustituyendo placeholders.
 
 > ⚠️ **Disclaimer:** material **educativo y de comunidad**, creado por [@chapi-dev](https://github.com/chapi-dev). No es contenido oficial de Telefónica S.A. ni de GitHub, Inc. Las marcas "Telefónica" y "GitHub Copilot" pertenecen a sus respectivos titulares y se utilizan solo con fines descriptivos del público y herramienta del workshop.
 
