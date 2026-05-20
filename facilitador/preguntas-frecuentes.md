@@ -57,8 +57,8 @@ O desde UI: `Org settings → Copilot → Access → buscar usuario → Remove`.
 ### ¿Cuánto cuesta Copilot Enterprise?
 Precio público actual: consultar [github.com/features/copilot/plans](https://github.com/features/copilot/plans). Para Telefónica aplica precio enterprise negociado.
 
-### ¿Qué son premium requests?
-Interacciones con modelos "premium" (Claude Sonnet, GPT-5, Gemini 2.x). Cada plan incluye una cuota; el exceso se factura como uso.
+### ¿Qué son los GitHub AI Credits?
+El modelo de billing **vigente desde el 1 junio 2026** que sustituye a las **Premium Requests** (PRUs). Cada interacción con modelos generativos (Chat, Agent, Code Review…) **consume tokens** (input + output + cache); esos tokens se traducen en AI Credits a una tarifa propia por modelo. **1 AI Credit = $0.01 USD**. Cada plan incluye una cuota mensual; el resto se factura como consumo. ⚠️ Code completions y Next Edit Suggestions **siguen siendo gratis**.
 
 ### ¿Cómo reduzco gasto sin perder valor?
 1. Revocar idle seats (28d).
@@ -67,7 +67,7 @@ Interacciones con modelos "premium" (Claude Sonnet, GPT-5, Gemini 2.x). Cada pla
 4. Budget alerts al 75 %.
 
 ### ¿Cuánto vale una hora de Copilot Coding Agent?
-Depende de minutos de GitHub Actions + premium requests del modelo. Estimación: similar a 1-2h de Action minutes Linux + ~50 premium requests. **Activar timeouts** para acotar.
+Depende de minutos de GitHub Actions + **AI Credits** consumidos por el modelo (tokens de input + output + cache de las herramientas invocadas). Estimación: similar a 1-2h de Action minutes Linux + un consumo de credits que varía mucho según modelo (Opus consume 10×–30× más que GPT-5 mini para la misma tarea). **Activar timeouts** para acotar.
 
 ---
 
@@ -153,6 +153,9 @@ Sí **si**:
 
 ### ¿El agente puede ejecutar comandos arbitrarios?
 Tiene un runner sandbox de GitHub. Puede ejecutar lo que el repo permita (tests, lints, builds). No tiene acceso a infra interna salvo que se configure.
+
+### ¿Y si necesito que un workflow llegue a recursos privados de Azure (Key Vault, AKS, ACR)?
+Activar **Hosted Compute Networking**: GitHub inyecta una NIC del runner dentro de tu VNet corporativa. Mantienes runners gestionados (cero operación) y a la vez tu workflow accede a private endpoints sin exponer IPs públicas. Ventaja clave para Telefónica: cumple políticas DORA/NIS2 y se combina con OIDC trust hacia Azure (elimina secretos de service principal). Detalle en [§2.5 del módulo 01](../01-gobernanza-y-control.md#25-hosted-compute-networking--runners-conectados-a-tu-red-corporativa).
 
 ### ¿Puedo asignar Copilot como reviewer en PRs?
 Sí. Útil para primer pase ligero. **No sustituye** la revisión humana en repos críticos.

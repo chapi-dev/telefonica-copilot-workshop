@@ -7,14 +7,40 @@
 
 ## 1. Identidad y accesos
 
-- [ ] **SAML SSO** activo y forzado contra Entra ID.
-- [ ] **SCIM** provisioning funcionando (alta/baja automáticas).
-- [ ] **Enterprise Managed Users (EMU)** activado.
-- [ ] Recovery codes guardados en vault corporativo.
-- [ ] IP allow list configurada para acceso administrativo.
-- [ ] 2FA obligatorio (`Settings → Authentication security → Require two-factor`).
-- [ ] Rol `copilot-admin` (custom role) creado en cada Org y asignado a personas, no a usuarios genéricos.
-- [ ] Lista de Enterprise Owners revisada y con mínimo necesario (≤ 5).
+> 📖 Para el deep dive de cada punto ver [`identidad-emu-sso.md`](./identidad-emu-sso.md).
+
+### 1.a Estructura
+
+- [ ] **1 Enterprise Account** activo (`telefonica-global`), con naming consistente.
+- [ ] **1 Organization por BU / país** (no Org única global, no proliferación descontrolada).
+- [ ] Convención de naming Orgs / Teams / Repos documentada y aplicada.
+- [ ] **Lista de Enterprise Owners** revisada y con mínimo necesario (≤ 5).
+- [ ] Custom role `copilot-admin` creado en cada Org y asignado a personas, no a usuarios genéricos.
+
+### 1.b Enterprise Managed Users (EMU)
+
+- [ ] Decisión EMU vs GHEC estándar documentada con árbol de decisión.
+- [ ] **Suffix EMU** (ej. `_telefonica`) decidido, aprobado por Comité de Identidad y comunicado (recordar: irreversible).
+- [ ] Plan de roll-out por waves documentado (no big-bang).
+- [ ] Comunicación a devs sobre limitaciones EMU (no contribución a OSS público desde cuenta corporativa) entregada en onboarding.
+- [ ] BUs que sí contribuyen a OSS público tienen Enterprise estándar paralelo.
+
+### 1.c SSO + SCIM
+
+- [ ] **SAML SSO** activo y forzado contra el IdP corporativo (Entra ID o IdP on-prem según BU).
+- [ ] **SCIM** provisioning funcionando (alta/baja automáticas, test on-demand pasado).
+- [ ] **Push de grupos** activado → teams sincronizados automáticamente.
+- [ ] Mapeo de atributos verificado (`userName`, `externalId`, `emails`, `name.*`).
+- [ ] **Conditional Access** (Entra) con MFA, compliant device y bloqueo de legacy auth.
+- [ ] BUs on-prem: patrón híbrido (AD FS / Keycloak + Entra Cloud Sync) documentado y con SLA de migración a Entra ID directo.
+- [ ] **Plan B** documentado por BU on-prem: qué hacer si AD FS cae (downtime SSO).
+
+### 1.d Hardening cuenta admin
+
+- [ ] **Recovery codes** guardados en vault corporativo.
+- [ ] **IP allow list** configurada para acceso administrativo.
+- [ ] **2FA obligatorio** (`Settings → Authentication security → Require two-factor`).
+- [ ] **Cuentas break-glass** (1-2) excluidas de SSO, con credenciales en caja fuerte y alerta en cualquier uso.
 
 ## 2. Asignación de Copilot
 

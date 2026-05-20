@@ -59,10 +59,10 @@
 
 ### Timing interno
 - 0:00–0:03 — Las 4 componentes del TCO (slide visual).
-- 0:03–0:06 — SKUs y premium requests. Mostrar la página de pricing.
+- 0:03–0:06 — SKUs y **AI Credits** (nuevo modelo desde 1 jun 2026, sustituye PRUs). Mostrar la página de pricing.
 - 0:06–0:12 — Metrics API: ejecutar `pull-copilot-metrics.ps1` en vivo, mostrar CSV.
 - 0:12–0:17 — Optimización: ejecutar `identify-idle-seats.ps1`. Mostrar ahorro.
-- 0:17–0:19 — Premium requests: budget alerts en UI.
+- 0:17–0:19 — **AI Credits**: budget alerts per-user/org en UI.
 - 0:19–0:20 — Checklist + transición.
 
 ### Trampas frecuentes

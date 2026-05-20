@@ -14,13 +14,15 @@ Copilot no es una sola línea en la factura. El coste total ("TCO") tiene 4 comp
 │ COSTE TOTAL DE COPILOT EN TELEFÓNICA                        │
 ├─────────────────────────────────────────────────────────────┤
 │ 1. Licencias Copilot (per seat / mes)                       │
-│ 2. Premium requests (Claude, GPT-5, modelos grandes)        │
+│ 2. GitHub AI Credits (consumo por tokens — antes "PRUs")    │
 │ 3. Copilot Coding Agent (GitHub Actions minutes + storage)  │
 │ 4. Coste oculto: idle seats + sobreasignación               │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 > 💡 En la mayoría de tenants enterprise, **el coste oculto (#4) supera el 20 %**. Es el primer objetivo a atacar.
+
+> 🔄 **Cambio de modelo de billing — 1 de junio de 2026:** GitHub sustituye las **Premium Requests (PRUs)** por **GitHub AI Credits**. El consumo se mide ahora por **tokens** (input + output + cache), con tarifa propia por modelo. **1 AI Credit = $0.01 USD**. Code completions y Next Edit Suggestions **siguen siendo gratis** (no consumen credits). Más detalle en §2.
 
 ---
 
@@ -31,13 +33,23 @@ Copilot no es una sola línea en la factura. El coste total ("TCO") tiene 4 comp
 | **Copilot Business** | Empresas estándar | Code completion, Chat IDE, modelos base, content exclusions, audit log | Knowledge bases, Copilot en GitHub.com avanzado, fine-tuning |
 | **Copilot Enterprise** | Grandes empresas reguladas (Telefónica) | Todo Business + Knowledge bases, Copilot en PRs, custom instructions a nivel org, EU data residency, Coding Agent ilimitado en repos privados | – |
 
-**Premium requests** (modelo de "uso adicional" desde 2025):
+**GitHub AI Credits** (modelo vigente desde el **1 junio 2026**, sustituye a Premium Requests):
 
-- Cada interacción con modelos premium (Claude Sonnet, GPT-5, Gemini 2.x) **consume 1 premium request**.
-- Cada plan trae una cuota mensual incluida; el resto se factura como consumo.
-- **Coste típico**: muy bajo por request, pero **se acumula rápido en equipos grandes** si no se controla.
+- **Unidad de cuenta:** **1 AI Credit = $0.01 USD**.
+- **Métrica:** se factura por **tokens** consumidos (input + output + cache).
+- **Cada modelo tiene su tarifa** por millón de tokens; Claude Opus consume muchos más credits que GPT-5 mini para la misma tarea.
+- **Cada plan incluye una cuota mensual** de credits:
+  - Copilot Pro: 1.000 credits ($10).
+  - Copilot Pro+: ~3.900 credits ($39).
+  - Copilot Business / Enterprise: cuota negociada en el contrato.
+- **Una vez agotada la cuota:** se factura por consumo (overage) o se bloquea (según `budget action`).
+- **Code completions inline y Next Edit Suggestions: GRATIS, no consumen credits.**
+- **Lo que SÍ consume credits:** Copilot Chat, Coding Agent, Code Review by Copilot, sesiones agénticas multi-step.
+- ⚠️ **No hay fallback** automático a modelo barato cuando se acaba la cuota (a diferencia del modelo PRU antiguo).
 
-> 🔑 Para Telefónica recomendamos **Copilot Enterprise** con un **budget mensual de premium requests** por org/BU.
+> 🔑 Para Telefónica recomendamos **Copilot Enterprise** con **budgets por cost center** (1 CC = 1 BU/proyecto) y **monitoring per-user vía Metrics API** para detectar power-users antes de que agoten la cuota del equipo. Los budgets de la UI no soportan scope "per user" (solo Enterprise / Org / Cost center).
+
+> 🗓️ **Migración:** los clientes con **annual plans** mantienen el esquema PRU hasta la fecha de renovación; tras la renovación pasan automáticamente al modelo AI Credits.
 
 ---
 
@@ -120,26 +132,36 @@ El script:
 
 > ⚠️ Documentar la política en intranet. No revocar sin warning previo.
 
-### 4.2 Controlar premium requests (quick win #2)
+### 4.2 Controlar AI Credits / Premium Requests (quick win #2)
 
 - Activar **budget alerts**: `Enterprise settings → Billing → Budgets and alerts → New budget`.
-- Definir budget por **org** (no global): permite atribuir al cost center correcto.
-- Alertas al 50 %, 75 %, 90 % del presupuesto.
-- Si se supera el 100 %, decidir si: (a) cortar acceso a premium o (b) seguir con cargo extra (configurable).
+- **Scopes disponibles** (a 2026-05, los 3 únicos):
+  - **Enterprise** → techo global. Opción "Exclude cost center usage" para no doblar control.
+  - **Organization** → por BU.
+  - **Cost center** → patrón recomendado, alineado con FinOps (1 CC por BU/proyecto).
+- ⚠️ **No existe scope "per user"** en la UI de budgets. El control per-user real proviene de:
+  1. La **cuota incluida en cada seat** Business/Enterprise (límite hardcoded del SKU).
+  2. **Cost center de 1 solo user** (workaround para casos críticos puntuales, no escalable).
+  3. **Alertas custom** sobre la Metrics API (pull diario por user, alerta en Sentinel/PagerDuty).
+- Alertas: 50 %, 75 %, 90 % del presupuesto.
+- **Stop usage when budget limit is reached** ✅ (hard-stop) en prod; sólo notificar en lab.
 
-**Buenas prácticas para reducir gasto premium sin perder valor:**
+**Buenas prácticas para reducir consumo sin perder valor:**
 
-1. **Custom instructions** que indiquen a Copilot usar modelo base salvo necesidad explícita.
-2. **Educar**: no usar Claude Sonnet 4.6 para autocompletar imports. Dejarlo para refactors complejos.
-3. **Prompt files** reutilizables para tareas repetitivas (evitan iteraciones que queman requests).
-4. **Mirar el ratio acceptance** de modelos premium: si es bajo, el modelo no está dando valor.
+1. **Custom instructions** que indiquen a Copilot usar **modelo eficiente por defecto** (GPT-5 mini, Claude Haiku) y reservar Opus / GPT-5.x para refactors complejos.
+2. **Educar al equipo:** un mismo prompt resuelto por Claude Opus puede consumir **10×–30× más credits/requests** que con GPT-5 mini. Importa qué modelo eliges.
+3. **Prompt files reutilizables** para tareas repetitivas (evitan iteraciones que queman cuota).
+4. **Acotar el contexto del chat:** cerrar archivos irrelevantes, no incluir todo el repo. El contexto cuenta como input tokens.
+5. **Mirar ratio de aceptación de modelos premium:** si la aceptación es baja, el modelo no está dando valor → revisar política.
+6. **Limitar Coding Agent** (la actividad más cara): timeouts cortos, allow-list de repos, revisión semanal de tareas largas.
+7. **Monitoring per-user con Metrics API**: el único camino para detectar al "power-user" que se come la cuota del team antes de que pase.
 
 ### 4.3 Coding Agent: el coste invisible
 
 Cada tarea del **Copilot Coding Agent** consume:
 - Minutos de GitHub Actions (en un runner gestionado por GitHub).
 - Storage temporal.
-- Premium requests del modelo elegido.
+- **AI Credits** del modelo elegido (tokens de input + output + cache de las herramientas que invoca el agente).
 
 Controles:
 
@@ -183,7 +205,8 @@ gh api --method DELETE /orgs/telefonica-sandbox/copilot/billing/selected_users \
 | Concepto | Cantidad | Precio unidad | Total |
 |----------|----------|---------------|-------|
 | Copilot Enterprise seats | __ | __ €/mes | __ € |
-| Premium requests extra | __ | __ €/req | __ € |
+| AI Credits incluidos en el plan | __ | (incluidos) | 0 € |
+| AI Credits adicionales (overage) | __ credits | 0,01 $/credit | __ € |
 | Actions minutes (Coding Agent) | __ | __ €/min | __ € |
 | Storage adicional | __ GB | __ €/GB | __ € |
 | **Subtotal** | | | __ € |

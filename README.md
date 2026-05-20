@@ -164,6 +164,7 @@ Para roles de **gobernanza** se requiere adicionalmente:
 ├── 📂 anexos/
 │   ├── checklist-pre-workshop.md
 │   ├── checklist-gobernanza.md
+│   ├── identidad-emu-sso.md            ← deep dive EMU + SSO/SCIM (Entra ID + on-prem)
 │   ├── recursos-y-enlaces.md
 │   ├── 📂 plantillas/
 │   │   ├── copilot-instructions.md      ← listo para .github/
@@ -171,6 +172,7 @@ Para roles de **gobernanza** se requiere adicionalmente:
 │   │   ├── mcp-config.json              ← .vscode/mcp.json corporativo
 │   │   └── policy-matrix.md             ← matriz para SecOps + FinOps + DPO
 │   └── 📂 scripts/
+│       ├── bootstrap-emu-enterprise.ps1 ← crea Orgs + Copilot policies + seats (EMU)
 │       ├── pull-copilot-metrics.ps1     ← snapshot Metrics API → CSV
 │       ├── identify-idle-seats.ps1      ← idle seats + ahorro estimado
 │       ├── export-audit-log.ps1         ← export audit log para evidencia

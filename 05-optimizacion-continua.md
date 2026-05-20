@@ -67,7 +67,7 @@ Acciones según señales:
 | Idle ratio sube | Revisar política de asignación, encuesta a inactivos |
 | Champions piden más MCP | Sprint de plataforma para MCP nuevos |
 | Code review repite "no uses X" | Añadirlo a custom instructions |
-| Pico de coste premium requests | Educación + prompt files reutilizables |
+| Pico de coste AI Credits | Educación + prompt files reutilizables + cambiar default a modelo eficiente |
 | Nuevo modelo disponible | A/B test 2 semanas en BU piloto |
 
 ### 2.4 Iterate
@@ -163,7 +163,7 @@ Rellenar en vivo (template; cada BU adapta):
 ## Resumen de los 5 bloques
 
 1. **Gobernanza**: SSO, SCIM, policies, content exclusions, audit log → Sentinel.
-2. **Costes**: TCO real, idle seats, premium requests, budgets, pool dinámico.
+2. **Costes**: TCO real, idle seats, AI Credits (por token), budgets multi-nivel, pool dinámico.
 3. **Skills**: instructions, prompt files, MCP, Extensions, Knowledge bases.
 4. **Práctica**: Ask / Edit / Agent + patrones + anti-patterns.
 5. **Continua**: ciclo D-M-A-I, champions, hackathons, plan 90 días.

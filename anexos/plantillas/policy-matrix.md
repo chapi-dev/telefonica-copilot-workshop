@@ -82,7 +82,7 @@ Rutas/patrones excluidos a nivel org (ver `content-exclusions.yml`):
 | Aspecto | Decisión |
 |---------|----------|
 | Presupuesto mensual seats | __ € |
-| Presupuesto mensual premium requests | __ € |
+| Presupuesto mensual AI Credits / Premium Requests (por cost center) | __ € |
 | Presupuesto Actions (Coding Agent) | __ € |
 | Alertas de budget | 50 %, 75 %, 90 % |
 | Acción al 100 % | ☐ Cortar acceso premium ☐ Permitir overage |

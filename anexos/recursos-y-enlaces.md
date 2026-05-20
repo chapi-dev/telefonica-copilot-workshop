@@ -46,7 +46,8 @@
 - [Copilot billing concepts](https://docs.github.com/en/copilot/concepts/copilot-billing)
 - [Copilot REST API — Billing & seats](https://docs.github.com/en/rest/copilot/copilot-user-management)
 - [Copilot Metrics API](https://docs.github.com/en/rest/copilot/copilot-metrics)
-- [Premium requests overview](https://docs.github.com/en/copilot/concepts/copilot-billing)
+- [GitHub AI Credits — billing overview](https://docs.github.com/en/copilot/concepts/copilot-billing)
+- [GitHub Blog · Copilot moves to usage-based billing (1 jun 2026)](https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/)
 - [Setting budgets and alerts](https://docs.github.com/en/billing/tutorials/set-up-budgets)
 - [Copilot pricing page](https://github.com/features/copilot/plans)
 
