@@ -52,22 +52,29 @@ O desde UI: `Org settings → Copilot → Access → buscar usuario → Remove`.
 
 ---
 
-## Coste
+## Optimización de consumo
 
-### ¿Cuánto cuesta Copilot Enterprise?
-Precio público actual: consultar [github.com/features/copilot/plans](https://github.com/features/copilot/plans). Para Telefónica aplica precio enterprise negociado.
+> Pricing, SKUs y modelos de licenciamiento están fuera del alcance del workshop. Para precios actualizados, consultar [github.com/features/copilot/plans](https://github.com/features/copilot/plans) o el contrato enterprise de Telefónica.
 
-### ¿Qué son los GitHub AI Credits?
-El modelo de billing **vigente desde el 1 junio 2026** que sustituye a las **Premium Requests** (PRUs). Cada interacción con modelos generativos (Chat, Agent, Code Review…) **consume tokens** (input + output + cache); esos tokens se traducen en AI Credits a una tarifa propia por modelo. **1 AI Credit = $0.01 USD**. Cada plan incluye una cuota mensual; el resto se factura como consumo. ⚠️ Code completions y Next Edit Suggestions **siguen siendo gratis**.
+### ¿Qué acciones de Copilot consumen tokens y cuáles no?
+**Gratis:** code completions inline + Next Edit Suggestions.
+**Consumen:** Copilot Chat, Inline Chat, Edit mode, Coding Agent, Copilot en PRs, MCP server invocations.
+La mayor parte del día a día (autocomplete) no consume. El gasto real viene del Chat largo y del Agent mal usado.
 
-### ¿Cómo reduzco gasto sin perder valor?
-1. Revocar idle seats (28d).
-2. Custom instructions que recomienden modelo base por defecto.
-3. Prompt files reutilizables.
-4. Budget alerts al 75 %.
+### ¿Cómo reduzco consumo sin perder valor?
+1. **Cambiar el modelo default** a uno eficiente (Mini / Haiku). Escalar a Opus solo cuando lo requiera la tarea.
+2. **Evitar Coding Agent** para tareas simples — usar Inline Chat o Edit mode.
+3. **1 chat = 1 tarea**: cerrar y abrir uno nuevo en vez de arrastrar 200 turnos.
+4. **Custom instructions** que pidan respuestas concisas.
+5. **Prompt files** reutilizables con modelo fijado para tareas repetitivas.
+6. **Acotar el contexto** del chat (cerrar archivos irrelevantes, usar `#file:` explícito, evitar `@workspace` cuando no aporta).
 
-### ¿Cuánto vale una hora de Copilot Coding Agent?
-Depende de minutos de GitHub Actions + **AI Credits** consumidos por el modelo (tokens de input + output + cache de las herramientas invocadas). Estimación: similar a 1-2h de Action minutes Linux + un consumo de credits que varía mucho según modelo (Opus consume 10×–30× más que GPT-5 mini para la misma tarea). **Activar timeouts** para acotar.
+### ¿Cuándo SÍ vale lanzar el Coding Agent?
+- Migración mecánica en N archivos.
+- Bug que requiere ejecutar tests e iterar hasta verde.
+- Tareas con criterio de "done" claro.
+- Tareas en background mientras haces otra cosa.
+- **No** para una edición de 2 líneas — eso es Inline Chat.
 
 ---
 

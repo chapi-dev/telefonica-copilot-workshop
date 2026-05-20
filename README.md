@@ -86,7 +86,7 @@ Al finalizar, los asistentes serán capaces de:
 |---------------|----------------------------------------------------|-----------|-----------|
 | 11:00 – 11:05 | Bienvenida, objetivos y reglas del juego           | 5 min     | [00-bienvenida-y-objetivos.md](./00-bienvenida-y-objetivos.md) |
 | 11:05 – 11:30 | 🛡️ **1. Gobernanza y control**                     | 25 min    | [01-gobernanza-y-control.md](./01-gobernanza-y-control.md) |
-| 11:30 – 11:50 | 💰 **2. Modelo de costes**                          | 20 min    | [02-modelo-de-costes.md](./02-modelo-de-costes.md) |
+| 11:30 – 11:50 | 💡 **2. Optimización de consumo**                   | 20 min    | [02-modelo-de-costes.md](./02-modelo-de-costes.md) |
 | 11:50 – 12:15 | 🔌 **3. Skills y conectores**                       | 25 min    | [03-skills-y-conectores.md](./03-skills-y-conectores.md) |
 | 12:15 – 12:45 | 🧪 **4. Caso práctico (live coding)**               | 30 min    | [04-caso-practico.md](./04-caso-practico.md) |
 | 12:45 – 12:55 | 🔁 **5. Optimización continua**                     | 10 min    | [05-optimizacion-continua.md](./05-optimizacion-continua.md) |

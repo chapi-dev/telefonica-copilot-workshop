@@ -7,13 +7,25 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 ## [Unreleased] · 2026-05-20
 
 ### 🔄 Cambiado
-- **Migración global de "Premium Requests" a "GitHub AI Credits"** (modelo vigente desde el 1 jun 2026):
-  - `02-modelo-de-costes.md`: §1 mapa actualizado + nueva nota de migración, §2 sección SKUs reescrita con explicación completa de AI Credits (precio, cuotas, modelos, fallback), §4.2 budgets en los 3 scopes reales (Enterprise / Org / Cost center — no per-user) + workarounds per-user vía Metrics API, §4.3 Coding Agent actualizado, tabla TCO ajustada.
-  - `05-optimizacion-continua.md`: triggers de mejora continua y resumen final.
-  - `facilitador/guion-facilitador.md`: timing interno del módulo 02.
-  - `facilitador/preguntas-frecuentes.md`: FAQ "¿Qué son AI Credits?" reescrita; FAQ de coste del Coding Agent.
-  - `anexos/plantillas/policy-matrix.md`: línea de presupuesto.
-  - `anexos/recursos-y-enlaces.md`: enlace al overview de billing + post del blog de GitHub.
+
+#### Módulo 02 reorientado a optimización de consumo (no pricing/billing)
+- `02-modelo-de-costes.md` **completamente reescrito** para centrarse en optimización táctica de tokens. Fuera: pricing, SKUs, modelo de licenciamiento, TCO, billing. Dentro:
+  - §1 Regla mental: qué acciones consumen tokens y cuáles son gratis (autocomplete + Next Edit Suggestions = gratis; Chat / Edit / Agent / PRs / MCP = consumen).
+  - §2 Elegir el modelo correcto + tabla "qué modelo para qué tarea" + anti-patrón del default mal puesto.
+  - §3 Cuándo NO usar Coding Agent (alternativas frugales) + cuándo SÍ vale + cómo lanzarlo frugal.
+  - §4 Acotar el contexto del chat con buenas prácticas y ahorros estimados + anti-patrón "chat eterno".
+  - §5 Custom instructions para forzar concisión.
+  - §6 Prompt files reutilizables con modelo fijado.
+  - §7 Anti-patterns que disparan el consumo (top 8).
+  - §8 Medición rápida de éxito (3 indicadores).
+  - Lab guiado focused en métricas y acceptance rate por modelo.
+- `facilitador/guion-facilitador.md`: timing interno y trampas del módulo 02 alineados con el nuevo enfoque.
+- `facilitador/preguntas-frecuentes.md`: sección "Coste" renombrada a "Optimización de consumo", FAQs reescritas (qué consume y qué no, cómo reducir consumo, cuándo SÍ vale el Agent). Pricing/SKUs marcado explícitamente fuera de scope.
+- `anexos/recursos-y-enlaces.md`: sección 2 "Modelo de costes" → "Optimización de consumo". Enlaces actualizados (Metrics API, custom instructions, prompt files, model selection, Coding Agent best practices). Pricing marcado fuera de scope.
+- `anexos/plantillas/policy-matrix.md`: sección 6 simplificada — fuera presupuestos en €, dentro decisiones operativas (modelo default, modelos premium permitidos, política Coding Agent).
+- `anexos/checklist-pre-workshop.md`: prerequisitos FinOps actualizados.
+- `README.md`: título del módulo 02 en agenda actualizado a "Optimización de consumo".
+- `.github/ISSUE_TEMPLATE/question.yml`: categoría "Modelo de costes" → "Optimización de consumo".
 
 ### 🚀 Añadido
 

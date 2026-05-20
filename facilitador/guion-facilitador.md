@@ -53,27 +53,31 @@
 
 ---
 
-## 11:30–11:50 · Modelo de costes (20 min)
+## 11:30–11:50 · Optimización de consumo (20 min)
 
-**Mensaje clave:** *"El 20 % de los seats no se usa. Antes de pedir más, optimicemos lo que tenemos. Con datos."*
+**Mensaje clave:** *"La mayoría del día a día (autocomplete) es gratis. El consumo viene de chats largos, modelos sobredimensionados y agentes lanzados para tareas triviales. Hoy os dejamos los patrones que reducen 40–60 % el consumo sin perder valor."*
 
 ### Timing interno
-- 0:00–0:03 — Las 4 componentes del TCO (slide visual).
-- 0:03–0:06 — SKUs y **AI Credits** (nuevo modelo desde 1 jun 2026, sustituye PRUs). Mostrar la página de pricing.
-- 0:06–0:12 — Metrics API: ejecutar `pull-copilot-metrics.ps1` en vivo, mostrar CSV.
-- 0:12–0:17 — Optimización: ejecutar `identify-idle-seats.ps1`. Mostrar ahorro.
-- 0:17–0:19 — **AI Credits**: budget alerts per-user/org en UI.
+- 0:00–0:02 — La regla mental: qué consume y qué no (autocomplete gratis vs Chat/Agent).
+- 0:02–0:06 — Elegir el modelo correcto. Mostrar tabla y default mal puesto.
+- 0:06–0:09 — Cuándo NO usar Coding Agent. Alternativas frugales.
+- 0:09–0:12 — Acotar contexto del chat: anti-patrón chat eterno + workspace siempre on.
+- 0:12–0:14 — Custom instructions de concisión + prompt files reutilizables.
+- 0:14–0:17 — Lab: `pull-copilot-metrics.ps1` + acceptance rate por modelo en jq.
+- 0:17–0:19 — Top 3 anti-patterns que disparan consumo.
 - 0:19–0:20 — Checklist + transición.
 
 ### Trampas frecuentes
 - ❌ Confundir "engagement" con "active_users". Aclarar definiciones.
 - ❌ Pretender que el acceptance rate sea 80 %. Bueno es 25–45 %.
+- ❌ Hablar de pricing o SKUs en este módulo — está fuera de alcance, remitir a doc oficial.
 
 ### Si va sobrado de tiempo
-- Demo de A/B test: comparar acceptance rate de modelo A vs B en el dashboard.
+- Demo de A/B test: comparar acceptance rate de modelo eficiente vs Opus en el dashboard.
+- Enseñar cómo crear un prompt file con modelo fijado.
 
 ### Si va corto de tiempo
-- Saltar la sección de Coding Agent (queda en doc).
+- Saltar el lab; dejar el checklist y los anti-patterns en pantalla.
 
 ---
 

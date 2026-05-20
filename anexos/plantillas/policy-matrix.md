@@ -77,15 +77,16 @@ Rutas/patrones excluidos a nivel org (ver `content-exclusions.yml`):
 | Alertas configuradas | Cambio policy, asignación masiva, MCP/Ext fuera allow-list |
 | Revisión SecOps | Mensual |
 
-## 6. Coste y presupuesto
+## 6. Presupuesto (referencia, no scope del workshop)
+
+> Pricing y budgets de Copilot se gestionan a nivel **contrato enterprise + Billing/Budgets de la UI**. Esta tabla es solo para alinear FinOps con la BU; el workshop no entra en este detalle.
 
 | Aspecto | Decisión |
 |---------|----------|
-| Presupuesto mensual seats | __ € |
-| Presupuesto mensual AI Credits / Premium Requests (por cost center) | __ € |
-| Presupuesto Actions (Coding Agent) | __ € |
-| Alertas de budget | 50 %, 75 %, 90 % |
-| Acción al 100 % | ☐ Cortar acceso premium ☐ Permitir overage |
+| Modelo default aprobado (eficiente) | ☐ Mini ☐ Haiku ☐ Otro: __ |
+| Modelos premium permitidos solo bajo justificación | ☐ Opus ☐ GPT-5.x ☐ Sonnet |
+| Política Coding Agent | ☐ Permitido siempre ☐ Allow-list de repos ☐ Solo background tasks |
+| Revisión trimestral de adopción + acceptance rate | ☐ Sí ☐ No |
 
 ## 7. MCP servers y Extensions aprobados
 

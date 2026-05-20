@@ -41,15 +41,15 @@
 
 ---
 
-## 2. Modelo de costes
+## 2. Optimización de consumo
 
-- [Copilot billing concepts](https://docs.github.com/en/copilot/concepts/copilot-billing)
-- [Copilot REST API — Billing & seats](https://docs.github.com/en/rest/copilot/copilot-user-management)
-- [Copilot Metrics API](https://docs.github.com/en/rest/copilot/copilot-metrics)
-- [GitHub AI Credits — billing overview](https://docs.github.com/en/copilot/concepts/copilot-billing)
-- [GitHub Blog · Copilot moves to usage-based billing (1 jun 2026)](https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/)
-- [Setting budgets and alerts](https://docs.github.com/en/billing/tutorials/set-up-budgets)
-- [Copilot pricing page](https://github.com/features/copilot/plans)
+- [Copilot Metrics API](https://docs.github.com/en/rest/copilot/copilot-metrics) — para medir acceptance rate por modelo y uso por usuario.
+- [Custom instructions for Copilot](https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions-for-github-copilot) — para forzar respuestas concisas.
+- [Prompt files (`.prompt.md`)](https://code.visualstudio.com/docs/copilot/copilot-customization) — reutilizables con modelo fijado.
+- [Copilot model selection](https://docs.github.com/en/copilot/customizing-copilot/changing-the-ai-model-for-copilot-chat) — cómo configurar el modelo default eficiente.
+- [Copilot Coding Agent best practices](https://docs.github.com/en/copilot/using-github-copilot/coding-agent/best-practices-for-using-copilot-to-work-on-tasks) — cuándo lanzar Agent y cuándo no.
+
+> 📌 Para pricing y SKUs, consultar la [página oficial de planes](https://github.com/features/copilot/plans) o el contrato Enterprise. Está fuera del alcance del workshop.
 
 ---
 

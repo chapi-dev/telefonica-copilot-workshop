@@ -97,6 +97,6 @@ Si todo marca `[OK]` → estáis listos.
 |--------|---------------------|
 | Org/Enterprise Owner | Acceso a settings del enterprise sandbox |
 | SecOps | Vuestra matriz de controles ISO/ENS/DORA |
-| FinOps | Plantilla de TCO actual de Copilot |
+| FinOps | Datos actuales de adopción y acceptance rate (opcional) |
 | TechLead | Lista de los 3 repos donde queréis empezar |
 | Champion | Vuestros 3 prompts favoritos para compartir |
